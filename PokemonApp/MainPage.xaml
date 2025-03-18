@@ -4,21 +4,30 @@
              x:Class="PokemonApp.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20">
+        <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label Text="Pokémon MAUI App" 
-                   FontSize="28"
-                   HorizontalOptions="Center"
-                   FontAttributes="Bold" />
+            <Label Text="Pokémon MAUI App"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
 
             <Button Text="Fetch Pokémon (Gen 1)"
                     Clicked="OnFetchPokemonClicked"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"/>
+
+            <Editor x:Name="PokemonEditor"
+                    Placeholder="Pokémon data will appear here..."
+                    AutoSize="TextChanges"
+                    HeightRequest="300"/>
+
+            <Button Text="Save Edited Data"
+                    Clicked="OnSaveEditedDataClicked"
+                    HorizontalOptions="Fill"/>
 
             <Label x:Name="ResultLabel"
-                   Text="Pokémon data will appear here."
+                   Text=""
                    FontSize="14"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"/>
 
         </VerticalStackLayout>
     </ScrollView>
