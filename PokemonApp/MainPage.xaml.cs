@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿
 
 
 namespace PokemonApp
@@ -17,7 +16,7 @@ namespace PokemonApp
         // Fetch generations 1, 2, and 3 simultaneously
         private async void OnFetchMultipleGenerationsClicked(object sender, EventArgs e)
         {
-            ResultLabel.Text = "Fetching Pokémon (Generations 1-3)...";
+            ResultLabel.Text = "Henter Pokémoner...";
 
             try
             {
@@ -33,7 +32,7 @@ namespace PokemonApp
                 // Show the combined Pokémon data in the editor
                 PokemonEditor.Text = combinedResults;
 
-                ResultLabel.Text = "Fetched Generations 1-3. You can edit now!";
+                ResultLabel.Text = "Hentede Generation 1-3. Du kan redigere dem nu!";
             }
             catch (Exception ex)
             {
@@ -76,7 +75,7 @@ namespace PokemonApp
                 await File.WriteAllTextAsync(filePath, editedData);
 #endif
 
-                ResultLabel.Text = "Edited Pokémon data saved successfully!";
+                ResultLabel.Text = "Redigerede Pokémon data gemt successfult!";
             }
             catch (Exception ex)
             {

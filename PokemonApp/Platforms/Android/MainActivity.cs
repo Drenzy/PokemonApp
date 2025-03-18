@@ -4,7 +4,6 @@ using Android.OS;
 using AndroidX.Core.App;
 using AndroidX.Core.Content;
 using Android;
-using Microsoft.Maui;
 
 namespace PokemonApp
 {

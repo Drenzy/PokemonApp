@@ -6,12 +6,20 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
+    <Color x:Key="Primary">#EF5350</Color>
+    <!-- Pokémon Red -->
     <Color x:Key="PrimaryDark">#ac99ea</Color>
     <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
+    <Color x:Key="Secondary">#FFD54F</Color>
+    <!-- Pokémon Yellow -->
     <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+
+    <Color x:Key="Tertiary">#42A5F5</Color>
+    <!-- Pokémon Blue -->
+    <Color x:Key="Background">#FFFFFF</Color>
+    <!-- White -->
+    <Color x:Key="TextColor">#212121</Color>
+    <!-- Dark Gray -->
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace PokemonApp;
+﻿namespace PokemonApp;
 
 public static class MauiProgram
 {
