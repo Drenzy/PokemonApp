@@ -14,38 +14,54 @@ namespace PokemonApp
             _httpClient = new HttpClient();
         }
 
-        // Fetch Pokémon data and display in Editor
-        private async void OnFetchPokemonClicked(object sender, EventArgs e)
+        // Fetch generations 1, 2, and 3 simultaneously
+        private async void OnFetchMultipleGenerationsClicked(object sender, EventArgs e)
         {
-            ResultLabel.Text = "Fetching Pokémon...";
+            ResultLabel.Text = "Fetching Pokémon (Generations 1-3)...";
+
             try
             {
-                var response = await _httpClient.GetAsync("https://pokeapi.co/api/v2/generation/1/");
-                if (!response.IsSuccessStatusCode)
-                {
-                    ResultLabel.Text = "Failed to fetch data.";
-                    return;
-                }
+                var generations = new[] { 1, 2, 3 };
+                var tasks = generations.Select(gen => FetchGenerationAsync(gen)).ToArray();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var generationData = JsonSerializer.Deserialize<GenerationData>(json);
-                var sb = new StringBuilder();
+                // Await all tasks concurrently
+                var results = await Task.WhenAll(tasks);
 
-                foreach (var pokemon in generationData.pokemon_species)
-                {
-                    var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    var id = segments[^1];
-                    sb.AppendLine($"{id} - {pokemon.name}");
-                }
+                // Combine results
+                var combinedResults = string.Join(Environment.NewLine, results);
 
-                PokemonEditor.Text = sb.ToString();
-                ResultLabel.Text = "Pokémon data fetched. You can edit it now.";
+                // Show the combined Pokémon data in the editor
+                PokemonEditor.Text = combinedResults;
+
+                ResultLabel.Text = "Fetched Generations 1-3. You can edit now!";
             }
             catch (Exception ex)
             {
                 ResultLabel.Text = $"Error: {ex.Message}";
             }
         }
+
+        // Helper method to fetch a single generation's Pokémon data
+        private async Task<string> FetchGenerationAsync(int generationNumber)
+        {
+            var response = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/generation/{generationNumber}/");
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var generationData = JsonSerializer.Deserialize<GenerationData>(json);
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"--- Generation {generationNumber} ---");
+            foreach (var pokemon in generationData.pokemon_species)
+            {
+                var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                var id = segments[^1];
+                sb.AppendLine($"{id} - {pokemon.name}");
+            }
+
+            return sb.ToString();
+        }
+
 
         // Save edited content to file
         private async void OnSaveEditedDataClicked(object sender, EventArgs e)

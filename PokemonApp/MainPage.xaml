@@ -11,8 +11,8 @@
                    FontAttributes="Bold"
                    HorizontalOptions="Center"/>
 
-            <Button Text="Fetch Pokémon (Gen 1)"
-                    Clicked="OnFetchPokemonClicked"
+            <Button Text="Fetch Pokémon (Gen 1-3, Multithreaded)"
+                    Clicked="OnFetchMultipleGenerationsClicked"
                     HorizontalOptions="Fill"/>
 
             <Editor x:Name="PokemonEditor"
