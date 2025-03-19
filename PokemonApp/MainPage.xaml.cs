@@ -20,7 +20,7 @@ namespace PokemonApp
 
             try
             {
-                var generations = new[] { 1, 2, 3 };
+                var generations = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
                 var tasks = generations.Select(gen => FetchGenerationAsync(gen)).ToArray();
 
                 // Await all tasks concurrently
@@ -32,7 +32,7 @@ namespace PokemonApp
                 // Show the combined Pokémon data in the editor
                 PokemonEditor.Text = combinedResults;
 
-                ResultLabel.Text = "Hentede Generation 1-3. Du kan redigere dem nu!";
+                ResultLabel.Text = "Hentede Generation 1-9. Du kan redigere dem nu!";
             }
             catch (Exception ex)
             {
@@ -49,17 +49,28 @@ namespace PokemonApp
             var json = await response.Content.ReadAsStringAsync();
             var generationData = JsonSerializer.Deserialize<GenerationData>(json);
 
+            // Extract, parse and sort by ID
+            var pokemonList = generationData?.pokemon_species?
+                .Select(pokemon =>
+                {
+                    var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    int id = int.Parse(segments[^1]);
+                    return new { id, pokemon.name };
+                })
+                .OrderBy(p => p.id) // sort by numeric ID
+                .ToList();
+
             var sb = new StringBuilder();
             sb.AppendLine($"--- Generation {generationNumber} ---");
-            foreach (var pokemon in generationData.pokemon_species)
+
+            foreach (var pokemon in pokemonList!)
             {
-                var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                var id = segments[^1];
-                sb.AppendLine($"{id} - {pokemon.name}");
+                sb.AppendLine($"{pokemon.id} - {pokemon.name}");
             }
 
             return sb.ToString();
         }
+
 
 
         // Save edited content to file
