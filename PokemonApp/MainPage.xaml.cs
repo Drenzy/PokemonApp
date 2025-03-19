@@ -5,6 +5,7 @@ namespace PokemonApp
 {
     public partial class MainPage : ContentPage
     {
+        // HttpClient instance to handle API requests.
         private readonly HttpClient _httpClient;
 
         public MainPage()
@@ -13,7 +14,7 @@ namespace PokemonApp
             _httpClient = new HttpClient();
         }
 
-        // Fetch generations 1, 2, and 3 simultaneously
+        // Fetch all Pokémon from Generations 1 to 9 concurrently.
         private async void OnFetchMultipleGenerationsClicked(object sender, EventArgs e)
         {
             ResultLabel.Text = "Henter Pokémoner...";
@@ -26,10 +27,10 @@ namespace PokemonApp
                 // Await all tasks concurrently
                 var results = await Task.WhenAll(tasks);
 
-                // Combine results
+                // Combine all fetched results into one formatted string.
                 var combinedResults = string.Join(Environment.NewLine, results);
 
-                // Show the combined Pokémon data in the editor
+                // Display the combined Pokémon data in the editor.
                 PokemonEditor.Text = combinedResults;
 
                 ResultLabel.Text = "Hentede Generation 1-9. Du kan redigere dem nu!";
@@ -40,7 +41,7 @@ namespace PokemonApp
             }
         }
 
-        // Helper method to fetch a single generation's Pokémon data
+        // Fetch Pokémon data for a specific generation asynchronously.
         private async Task<string> FetchGenerationAsync(int generationNumber)
         {
             var response = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/generation/{generationNumber}/");
@@ -49,15 +50,15 @@ namespace PokemonApp
             var json = await response.Content.ReadAsStringAsync();
             var generationData = JsonSerializer.Deserialize<GenerationData>(json);
 
-            // Extract, parse and sort by ID
+            // Extract, parse, and sort Pokémon data by ID.
             var pokemonList = generationData?.pokemon_species?
                 .Select(pokemon =>
                 {
                     var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    int id = int.Parse(segments[^1]);
+                    int id = int.Parse(segments[^1]); // Extract numerical ID from URL
                     return new { id, pokemon.name };
                 })
-                .OrderBy(p => p.id) // sort by numeric ID
+                .OrderBy(p => p.id) // Sort by ID
                 .ToList();
 
             var sb = new StringBuilder();
@@ -73,7 +74,7 @@ namespace PokemonApp
 
 
 
-        // Save edited content to file
+        // Save the edited Pokémon data to the files app download folder on the device.
         private async void OnSaveEditedDataClicked(object sender, EventArgs e)
         {
             try

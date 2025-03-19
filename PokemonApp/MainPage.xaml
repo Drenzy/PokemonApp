@@ -3,30 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokemonApp.MainPage">
 
+    <!-- Scrollable layout to accommodate different screen sizes -->
     <ScrollView BackgroundColor="{StaticResource Background}">
         <VerticalStackLayout Padding="25" Spacing="15">
 
+            <!-- App logo image -->
             <Image Source="logo.png"
                WidthRequest="200"
                HeightRequest="200"
                HorizontalOptions="Center"
                Aspect="AspectFit"/>
 
+            <!-- App title with predefined style -->
             <Label Text="Pokémon MAUI App" Style="{StaticResource TitleLabel}"/>
 
+            <!-- Button to fetch all Pokémon from Generations 1-9 -->
             <Button Text="Hent ALLE Pokémon (Gen 1-9)"
                 Clicked="OnFetchMultipleGenerationsClicked"
                 BackgroundColor="{StaticResource Tertiary}"/>
 
+            <!-- Editor where the Pokémon data will be displayed and can be edited -->
             <Editor x:Name="PokemonEditor"
                 Placeholder="Pokémon data kommer til at være her..."
                 AutoSize="TextChanges"
                 HeightRequest="300"/>
 
+            <!-- Button to save the edited Pokémon data -->
             <Button Text="Gem Redigerede Data"
                 Clicked="OnSaveEditedDataClicked"
                 BackgroundColor="{StaticResource Secondary}"/>
 
+            <!-- Label to display status messages (e.g., fetch success, errors, etc.) -->
             <Label x:Name="ResultLabel"
                HorizontalOptions="Center"
                FontAttributes="Italic"
