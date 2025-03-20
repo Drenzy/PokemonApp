@@ -44,32 +44,43 @@ namespace PokemonApp
         // Fetch Pokémon data for a specific generation asynchronously.
         private async Task<string> FetchGenerationAsync(int generationNumber)
         {
-            var response = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/generation/{generationNumber}/");
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var generationData = JsonSerializer.Deserialize<GenerationData>(json);
-
-            // Extract, parse, and sort Pokémon data by ID.
-            var pokemonList = generationData?.pokemon_species?
-                .Select(pokemon =>
-                {
-                    var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    int id = int.Parse(segments[^1]); // Extract numerical ID from URL
-                    return new { id, pokemon.name };
-                })
-                .OrderBy(p => p.id) // Sort by ID
-                .ToList();
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"--- Generation {generationNumber} ---");
-
-            foreach (var pokemon in pokemonList!)
+            try
             {
-                sb.AppendLine($"{pokemon.id} - {pokemon.name}");
-            }
+                var response = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/generation/{generationNumber}/");
 
-            return sb.ToString();
+                // IF API Returns an error (f.eks. 404 or 500)
+                if (!response.IsSuccessStatusCode)
+                {
+                    return $"Fejl ved hentning af Generation {generationNumber}: {response.StatusCode}";
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                var generationData = JsonSerializer.Deserialize<GenerationData>(json);
+
+                var pokemonList = generationData?.pokemon_species?
+                    .Select(pokemon =>
+                    {
+                        var segments = pokemon.url.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                        int id = int.Parse(segments[^1]);
+                        return new { id, pokemon.name };
+                    })
+                    .OrderBy(p => p.id)
+                    .ToList();
+
+                var sb = new StringBuilder();
+                sb.AppendLine($"--- Generation {generationNumber} ---");
+
+                foreach (var pokemon in pokemonList!)
+                {
+                    sb.AppendLine($"{pokemon.id} - {pokemon.name}");
+                }
+
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                return $"Fejl ved hentning af Generation {generationNumber}: {ex.Message}";
+            }
         }
 
 
