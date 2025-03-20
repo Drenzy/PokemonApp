@@ -99,6 +99,12 @@ namespace PokemonApp
         await File.WriteAllTextAsync(filePath, editedData);
 #endif
 
+#if WINDOWS
+var downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
+await File.WriteAllTextAsync(filePath, editedData);
+#endif
+
                 ResultLabel.Text = $"Fil gemt: {filePath}";
             }
             catch (Exception ex)
