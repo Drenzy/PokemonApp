@@ -91,20 +91,23 @@ namespace PokemonApp
             try
             {
                 var editedData = PokemonEditor.Text;
+                string filePath = "Ukendt placering"; // Default message if platform is not Android
 
 #if ANDROID
-                var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-                var filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
-                await File.WriteAllTextAsync(filePath, editedData);
+        var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+        filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
+        await File.WriteAllTextAsync(filePath, editedData);
 #endif
 
-                ResultLabel.Text = "Redigerede Pokémon data gemt successfult!";
+                ResultLabel.Text = $"Fil gemt: {filePath}";
             }
             catch (Exception ex)
             {
-                ResultLabel.Text = $"Error: {ex.Message}";
+                ResultLabel.Text = $"Fejl: {ex.Message}";
             }
         }
+
+
 
         // JSON Models (fix nullable warnings)
         public class GenerationData
