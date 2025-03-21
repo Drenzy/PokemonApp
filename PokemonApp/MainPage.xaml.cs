@@ -1,6 +1,8 @@
 ﻿
 
 
+using System.Collections.Concurrent;
+
 namespace PokemonApp
 {
     public partial class MainPage : ContentPage
@@ -22,17 +24,24 @@ namespace PokemonApp
             try
             {
                 var generations = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                var tasks = generations.Select(gen => FetchGenerationAsync(gen)).ToArray();
+                var results = new ConcurrentBag<string>(); // Thread-safe collection
 
-                // Await all tasks concurrently
-                var results = await Task.WhenAll(tasks);
+                // Run multiple tasks with real multithreading
+                var tasks = generations.Select(gen => Task.Run(async () =>
+                {
+                    // Fetch Pokémon data for the current generation
+                    var result = await FetchGenerationAsync(gen);
+                    results.Add(result); // Add the result to the thread-safe collection
+                })).ToArray();
 
-                // Combine all fetched results into one formatted string.
+                // Wait for all tasks to complete
+                await Task.WhenAll(tasks);
+
+                // Combine the results from all tasks
                 var combinedResults = string.Join(Environment.NewLine, results);
 
-                // Display the combined Pokémon data in the editor.
+                // Display the combined Pokémon data in the editor
                 PokemonEditor.Text = combinedResults;
-
                 ResultLabel.Text = "Hentede Generation 1-9. Du kan redigere dem nu!";
             }
             catch (Exception ex)
@@ -83,8 +92,6 @@ namespace PokemonApp
             }
         }
 
-
-
         // Save the edited Pokémon data to the files app download folder on the device.
         private async void OnSaveEditedDataClicked(object sender, EventArgs e)
         {
@@ -112,8 +119,6 @@ await File.WriteAllTextAsync(filePath, editedData);
                 ResultLabel.Text = $"Fejl: {ex.Message}";
             }
         }
-
-
 
         // JSON Models (fix nullable warnings)
         public class GenerationData
