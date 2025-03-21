@@ -33,6 +33,12 @@
                 Clicked="OnSaveEditedDataClicked"
                 BackgroundColor="{StaticResource Secondary}"/>
 
+            <!-- Add a Button to trigger location fetching -->
+            <Button Text="Fetch Location"
+            Clicked="OnFetchLocationClicked"
+            VerticalOptions="CenterAndExpand" 
+            HorizontalOptions="CenterAndExpand" />
+
             <!-- Label to display status messages (e.g., fetch success, errors, etc.) -->
             <Label x:Name="ResultLabel"
                HorizontalOptions="Center"

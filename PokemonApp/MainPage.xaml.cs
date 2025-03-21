@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Maui.Devices.Sensors; // Ensure you're using the correct Geolocation class from MAUI
+using Microsoft.Maui.ApplicationModel; // Make sure to include this for Permissions
 
 namespace PokemonApp
 {
@@ -132,6 +134,41 @@ namespace PokemonApp
             {
                 // Display an error message if saving the file fails
                 ResultLabel.Text = $"Fejl: {ex.Message}";
+            }
+        }
+
+        // Fetch the device's current GPS location and display it.
+        private async void OnFetchLocationClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                // Check if location permission is granted
+                var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+
+                if (status == PermissionStatus.Granted)
+                {
+                    // Get the device's current location
+                    var location = await Geolocation.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.High));
+
+                    if (location != null)
+                    {
+                        // Display the location in the ResultLabel
+                        ResultLabel.Text = $"Latitude: {location.Latitude}, Longitude: {location.Longitude}";
+                    }
+                    else
+                    {
+                        ResultLabel.Text = "Kunne ikke hente GPS-lokation.";
+                    }
+                }
+                else
+                {
+                    ResultLabel.Text = "GPS-adgang ikke tilladt.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur while fetching the location
+                ResultLabel.Text = $"Fejl ved hentning af GPS-lokation: {ex.Message}";
             }
         }
 
