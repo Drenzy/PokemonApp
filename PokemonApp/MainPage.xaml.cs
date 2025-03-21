@@ -1,7 +1,4 @@
-﻿
-
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace PokemonApp
 {
@@ -19,12 +16,16 @@ namespace PokemonApp
         // Fetch all Pokémon from Generations 1 to 9 concurrently.
         private async void OnFetchMultipleGenerationsClicked(object sender, EventArgs e)
         {
+            // Display a message while fetching the Pokémon data
             ResultLabel.Text = "Henter Pokémoner...";
 
             try
             {
+                // List of Pokémon generations to fetch
                 var generations = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                var results = new ConcurrentBag<string>(); // Thread-safe collection
+
+                // Thread-safe collection to store the results
+                var results = new ConcurrentBag<string>(); 
 
                 // Run multiple tasks with real multithreading
                 var tasks = generations.Select(gen => Task.Run(async () =>
