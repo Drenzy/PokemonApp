@@ -63,9 +63,13 @@ namespace PokemonApp
                     return $"Fejl ved hentning af Generation {generationNumber}: {response.StatusCode}";
                 }
 
+                // Read the JSON response and extract the Pokémon names
                 var json = await response.Content.ReadAsStringAsync();
+
+                // Deserialize the JSON response into a GenerationData object
                 var generationData = JsonSerializer.Deserialize<GenerationData>(json);
 
+                // Extract the Pokémon names and IDs from the generation data
                 var pokemonList = generationData?.pokemon_species?
                     .Select(pokemon =>
                     {
@@ -76,14 +80,18 @@ namespace PokemonApp
                     .OrderBy(p => p.id)
                     .ToList();
 
+                // Build a string with the Pokémon names and IDs
                 var sb = new StringBuilder();
+                // Append the Pokémon names to the string
                 sb.AppendLine($"--- Generation {generationNumber} ---");
 
+                // Append each Pokémon name and ID to the string
                 foreach (var pokemon in pokemonList!)
                 {
                     sb.AppendLine($"{pokemon.id} - {pokemon.name}");
                 }
 
+                // Return the string with the Pokémon names and IDs
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -97,25 +105,30 @@ namespace PokemonApp
         {
             try
             {
+                // Get the edited Pokémon data from the editor
                 var editedData = PokemonEditor.Text;
                 string filePath = "Ukendt placering"; // Default message if platform is not Android
 
-#if ANDROID
-        var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-        filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
-        await File.WriteAllTextAsync(filePath, editedData);
-#endif
+                #if ANDROID
+                // Get the path to the Downloads folder on Android
+                var downloadsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+                filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
+                await File.WriteAllTextAsync(filePath, editedData);
+                #endif
 
-#if WINDOWS
-var downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
-await File.WriteAllTextAsync(filePath, editedData);
-#endif
+                #if WINDOWS
+                // Get the path to the Downloads folder on Windows
+                var downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                filePath = Path.Combine(downloadsPath, "PokemonListEdited.txt");
+                await File.WriteAllTextAsync(filePath, editedData);
+                #endif
 
+                // Display the path to the saved file
                 ResultLabel.Text = $"Fil gemt: {filePath}";
             }
             catch (Exception ex)
             {
+                // Display an error message if saving the file fails
                 ResultLabel.Text = $"Fejl: {ex.Message}";
             }
         }
