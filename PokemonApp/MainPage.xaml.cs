@@ -46,6 +46,7 @@ namespace PokemonApp
             }
             catch (Exception ex)
             {
+                // Display an error message if fetching the Pokémon data fails
                 ResultLabel.Text = $"Error: {ex.Message}";
             }
         }
